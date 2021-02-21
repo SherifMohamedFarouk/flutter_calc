@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 void main() {
   runApp(MaterialApp(
-    home:FavCity(),
+    home: FavCity(),
   ));
 }
 
@@ -15,6 +15,8 @@ class FavCity extends StatefulWidget {
 
 class FavCityState extends State {
   String name = "";
+  var currencies = ['Euro', 'Dollar', 'EGP ', 'Others'];
+  var currentCuren = 'Dollar';
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +33,25 @@ class FavCityState extends State {
                 setState(() {
                   name = userinput;
                 });
-
               },
             ),
+            DropdownButton<String>(
+              items: currencies.map((String dropDown) {
+                return DropdownMenuItem<String>(
+                  value: dropDown,
+                  child: Text(dropDown),
+                );
+              }).toList(),
+              onChanged: (String value) {
+                setState(() {
+                  this.currentCuren = value;
+                });
+              },
+              value: currentCuren,
+            ),
             Padding(
-              padding:  EdgeInsets.all(30.0),
-                child:Text("your best city $name")
-            )
+                padding: EdgeInsets.all(30.0),
+                child: Text("your best city $name"))
           ],
         ),
       ),
