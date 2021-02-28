@@ -2,59 +2,143 @@ import 'package:flutter/material.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: FavCity(),
+    theme: ThemeData(
+      primaryColor: Colors.indigo,
+          accentColor: Colors.indigoAccent,
+        brightness: Brightness.light
+    ),
+    debugShowCheckedModeBanner: false,
+    home: MoneyCalc(),
   ));
 }
 
-class FavCity extends StatefulWidget {
+class MoneyCalc extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return FavCityState();
+    return MoneyCalcState();
   }
 }
 
-class FavCityState extends State {
-  String name = "";
-  var currencies = ['Euro', 'Dollar', 'EGP ', 'Others'];
-  var currentCuren = 'Dollar';
+class MoneyCalcState extends State<MoneyCalc> {
+  var currencies = ['Dollar', 'Euro', 'Egp'];
+  var minmumpadding = 5.0;
+  var currentcurrencies = 'Dollar';
+
 
   @override
   Widget build(BuildContext context) {
+    TextStyle textStyle = Theme.of(context).textTheme.title;
     return Scaffold(
+      // backgroundColor: Colors.black12,
+      // resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: Text("Statefull ex"),
+        title: Text("Money Calculator"),
       ),
       body: Container(
-        margin: EdgeInsets.all(20.0),
-        child: Column(
+        child: ListView(
           children: [
-            TextField(
-              onSubmitted: (String userinput) {
-                setState(() {
-                  name = userinput;
-                });
-              },
-            ),
-            DropdownButton<String>(
-              items: currencies.map((String dropDown) {
-                return DropdownMenuItem<String>(
-                  value: dropDown,
-                  child: Text(dropDown),
-                );
-              }).toList(),
-              onChanged: (String value) {
-                setState(() {
-                  this.currentCuren = value;
-                });
-              },
-              value: currentCuren,
+            getImageAsset(),
+            Padding(
+              padding: EdgeInsets.all(minmumpadding),
+              child: TextField(cursorColor:Colors.white ,
+                decoration: InputDecoration(
+                    labelText: 'Principal',
+
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(minmumpadding))),
+              ),
             ),
             Padding(
-                padding: EdgeInsets.all(30.0),
-                child: Text("your best city $name"))
+                padding: EdgeInsets.all(minmumpadding),
+                child: TextField(
+                  decoration: InputDecoration(
+                      labelText: 'Rate of interest ',
+                      hintText: 'in  percent',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(minmumpadding))),
+                )),
+            Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                        padding: EdgeInsets.all(minmumpadding),
+                        child: TextField(
+                          decoration: InputDecoration(
+                              labelText: 'Term',
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                  BorderRadius.circular(minmumpadding))),
+                        )),
+                  ),
+                  Expanded(
+                    child: Padding(
+                        padding: EdgeInsets.all(minmumpadding),
+                        child: DropdownButton<String>(
+                          hint: Text("Select a currencies"),
+                          value: currentcurrencies,
+                          onChanged: (String value) {
+                            setState(() {
+                              currentcurrencies = value;
+                            });
+                          },
+                          items:currencies.map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        )
+                    ),
+                  ),
+
+                ]
+            ),
+            Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                        padding: EdgeInsets.all(minmumpadding),
+                        child: RaisedButton(
+                          color: Theme.of(context).accentColor,
+                          child: Text('Calculate',style: textStyle,),
+
+                          onPressed:() {
+
+                          },
+                        ),
+                  ),),
+                  Expanded(
+                    child: Padding(
+                        padding: EdgeInsets.all(minmumpadding),
+                        child:RaisedButton(
+                          child: Text('Reset',style: textStyle),
+                          color: Colors.blueGrey
+                          ,
+                          onPressed:() {
+
+                          },
+                        ),
+                    ),
+                  ),
+
+                ]
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget getImageAsset() {
+    AssetImage assetImage = AssetImage('images/download.png');
+    Image image = Image(
+      image: assetImage,
+      width: 250.0,
+      height: 150.0,
+    );
+    return Container(
+      child: image,
+      margin: EdgeInsets.all(40.0),
     );
   }
 }
