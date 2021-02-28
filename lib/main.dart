@@ -19,6 +19,7 @@ class MoneyCalc extends StatefulWidget {
 }
 
 class MoneyCalcState extends State<MoneyCalc> {
+  var formKey = GlobalKey<FormState>();
   var currencies = ['Dollar', 'Euro', 'Egp'];
   var minmumpadding = 5.0;
   var currentcurrencies = 'Dollar';
@@ -29,27 +30,34 @@ class MoneyCalcState extends State<MoneyCalc> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = Theme
-        .of(context)
-        .textTheme
-        .title;
+    TextStyle textStyle = Theme.of(context).textTheme.title;
     return Scaffold(
       // backgroundColor: Colors.black12,
       // resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text("Money Calculator"),
       ),
-      body: Container(
+      body: Form(
+        key: formKey,
         child: ListView(
           children: [
             getImageAsset(),
             Padding(
               padding: EdgeInsets.all(minmumpadding),
-              child: TextField(
+              child: TextFormField(
                 cursorColor: Colors.white,
                 controller: principalController,
+                validator: (String value) {
+                    if (value.isEmpty) {
+                      return 'Please enter princaple amount';
+                    }
+                  },
+
                 decoration: InputDecoration(
                     labelText: 'Principal',
+                    errorStyle: TextStyle(
+                      color:Colors.yellowAccent
+                    ),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(minmumpadding))),
               ),
@@ -75,7 +83,7 @@ class MoneyCalcState extends State<MoneyCalc> {
                           hintText: 'In years',
                           border: OutlineInputBorder(
                               borderRadius:
-                              BorderRadius.circular(minmumpadding))),
+                                  BorderRadius.circular(minmumpadding))),
                     )),
               ),
               Expanded(
@@ -104,16 +112,16 @@ class MoneyCalcState extends State<MoneyCalc> {
                 child: Padding(
                   padding: EdgeInsets.all(minmumpadding),
                   child: RaisedButton(
-                    color: Theme
-                        .of(context)
-                        .accentColor,
+                    color: Theme.of(context).accentColor,
                     child: Text(
                       'Calculate',
                       style: textStyle,
                     ),
                     onPressed: () {
                       setState(() {
-                        result = calculateTheMoney();
+                        if(formKey.currentState.validate()) {
+                          result = calculateTheMoney();
+                        }
                       });
                     },
                   ),
@@ -129,7 +137,6 @@ class MoneyCalcState extends State<MoneyCalc> {
                       setState(() {
                         reset();
                       });
-
                     },
                   ),
                 ),
@@ -137,8 +144,10 @@ class MoneyCalcState extends State<MoneyCalc> {
             ]),
             Padding(
                 padding: EdgeInsets.all(minmumpadding * 2),
-                child: Text(result, style: textStyle,)
-            )
+                child: Text(
+                  result,
+                  style: textStyle,
+                ))
           ],
         ),
       ),
@@ -162,14 +171,15 @@ class MoneyCalcState extends State<MoneyCalc> {
     double principal = double.parse(principalController.text);
     double rate = double.parse(rateController.text);
     double term = double.parse(termController.text);
-    double investment = principal + (principal*rate*term)/100 ;
+    double investment = principal + (principal * rate * term) / 100;
     return 'after $term of years , your investment will be worth $investment $currentcurrencies';
   }
-  void reset(){
-    principalController.text='';
-    termController.text="";
-    rateController.text="";
-    result="";
-    currentcurrencies=currencies[0];
+
+  void reset() {
+    principalController.text = '';
+    termController.text = "";
+    rateController.text = "";
+    result = "";
+    currentcurrencies = currencies[0];
   }
 }
